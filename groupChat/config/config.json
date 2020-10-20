@@ -1,0 +1,30 @@
+{
+    "development": {
+        "config_id": "development",
+        "project_name": "group chat",
+        "project_desc": "user for group chatting",
+        "node_port": 1800,
+        "host": "localhost",
+        "basicAuthUser": "",
+        "basicAuthKey": "",
+        "database": "socket_server",
+        "swaggerURL":"localhost:1800"
+    },
+    "staging": {
+        "config_id": "staging",
+        "node_port": 1500,
+        "database": "socket_server",
+        "host": "localhost",
+        "basicAuthUser": ""
+    },
+    "production": {
+        "config_id": "production",
+        "node_port": 1801,
+        "database": "socket_server",
+        "host": "localhost",
+        "basicAuthUser": "",
+        "user": "node-trainee@mobiloitte.com",
+        "pass": "Mobiloitte1",
+        "basicAuthKey": ""
+    }
+}
