@@ -1,0 +1,64 @@
+{
+    "development": {
+        "config_id": "development",
+        "app_name": "innerPurpose",
+        "app_desc": "innerPurpose",
+        "node_port": 1419,
+        "json_indentation": 4,
+        "host": "localhost",
+        "swaggerURL":"localhost:1419",
+        "url":"http://172.16.6.170:4205/reset-password",
+        "adminURL":"http://172.16.6.170:4205/",
+        "basicAuthUser": "",
+        "basicAuthKey": "",
+        "database": "innerPurpose-App-dev",
+        "nodemailer": {
+            "user": "inner.purpose.3311@gmail.com",
+            "pass": "Mobiloitte#@!"
+        },
+        "cloudinary": {
+            "cloud_name": "dl2d0v5hy",
+            "api_key": "841684319665911",
+            "api_secret": "kG5j1sXJT3eeNAp5CtpZgIdfQzM"
+        },
+        "serverKey":{
+            "apiKey":"AAAA-OAfjaw:APA91bEg_tDxVV74p1WEODBC_-hNhjuEprUvtfKJ9ziyWTBl3xEludmpjIk5Ou6w-2xiV62PPdpLmsuQ3dLcFBWDt1FkASYj0Af0TdybWQOrWLGiiGHYixZi3OgEf-6I2_2KXqd_Oje_"
+        }
+    },
+    "staging": {
+        "config_id": "staging",
+        "node_port": 1502,
+        "database": "innerPurpose-App-stag",
+        "host": "localhost",
+        "swaggerURL":"ec2-35-176-66-190.eu-west-2.compute.amazonaws.com:1502",
+        "url":"http://ec2-35-176-66-190.eu-west-2.compute.amazonaws.com:1502/reset-password",
+        "adminURL":"http://ec2-35-176-66-190.eu-west-2.compute.amazonaws.com:1502/",
+        "basicAuthUser": "",
+        "user": "inner.purpose.3311@gmail.com",
+        "pass": "Mobiloitte#@!",
+        "basicAuthKey": "",
+        "cloudinary": {
+            "cloud_name": "dl2d0v5hy",
+            "api_key": "841684319665911",
+            "api_secret": "kG5j1sXJT3eeNAp5CtpZgIdfQzM"
+        },
+        "serverKey":{
+            "apiKey":"AAAA-OAfjaw:APA91bEg_tDxVV74p1WEODBC_-hNhjuEprUvtfKJ9ziyWTBl3xEludmpjIk5Ou6w-2xiV62PPdpLmsuQ3dLcFBWDt1FkASYj0Af0TdybWQOrWLGiiGHYixZi3OgEf-6I2_2KXqd_Oje_"
+        }
+    },
+    "production": {
+        "config_id": "production",
+        "node_port": 1600,
+        "database": "innerPurpose-App",
+        "host": "localhost",
+        "basicAuthUser": "",
+        "user": "inner.purpose.3311@gmail.com",
+        "pass": "Mobiloitte#@!",
+        "basicAuthKey": "",
+        "cloudinary": {
+            "cloud_name": "",
+            "api_key": "",
+            "api_secret": ""
+        }
+    }
+}

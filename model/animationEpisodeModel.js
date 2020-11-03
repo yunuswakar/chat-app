@@ -1,0 +1,29 @@
+var mongoose = require('mongoose');
+var mongoosePaginate = require('mongoose-paginate');
+var schema=mongoose.Schema
+var animationKey= new schema({
+
+    categoryId:{
+        type:schema.Types.ObjectId,
+        ref:"animation_category"
+    },
+    categoryName:{
+        type: String
+    },
+    episodeName:{
+        type: String
+    },
+    image:{
+        type:String
+    },
+    status:{
+        type:String,
+        enum:["ACTIVE", "BLOCK", "DELETE"],
+        default:"ACTIVE"
+    },
+
+
+}, { timestamps: true })
+
+animationKey.plugin(mongoosePaginate);
+module.exports = mongoose.model('animation_episode', animationKey);
