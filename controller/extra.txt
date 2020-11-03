@@ -1,0 +1,364 @@
+
+// const signup = (req, res) => {
+//     try {
+//         userModel.findOne({ userName: req.body.userName, status: { $ne: "DELETED" } }, (error, checkUserName) => {
+//             if (error) {
+//                 response(res, ErrorCode.SOMETHING_WRONG, [], ErrorMessage.SOMETHING_WRONG);
+//             } else {
+//                 if (checkUserName) {
+//                     response(res, ErrorCode.BAD_REQUEST, [], ErrorMessage.USERNAME_EXIST);
+//                 } else {
+//                     userModel.findOne({ email: req.body.email, status: { $ne: "DELETED" } }, (error, checkEmail) => {
+//                         if (error) {
+//                             response(res, ErrorCode.SOMETHING_WRONG, [], ErrorMessage.SOMETHING_WRONG);
+//                         } else {
+//                             if (checkEmail) {
+//                                 response(res, ErrorCode.BAD_REQUEST, [], ErrorMessage.EMAIL_EXIST);
+//                             } else {
+//                                 userModel.findOne({ mobileNumber: req.body.mobileNumber, status: { $ne: "DELETED" } }, (error, checkMobile) => {
+//                                     if (error) {
+//                                         response(res, ErrorCode.SOMETHING_WRONG, [], ErrorMessage.SOMETHING_WRONG);
+//                                     } else {
+//                                         if (checkMobile) {
+//                                             response(res, ErrorCode.BAD_REQUEST, [], ErrorMessage.MOBILE_EXIST);
+//                                         } else {
+//                                             var otp = commonFunction.getOTP();
+//                                             req.body.password = bcrypt.hashSync(req.body.password, salt)
+//                                             req.body.otp = otp;
+//                                             userModel.create(req.body, (error, userSave) => {
+//                                                 if (error) {
+//                                                     response(res, ErrorCode.SOMETHING_WRONG, [], ErrorMessage.SOMETHING_WRONG);
+//                                                 } else {
+//                                                     var token = jwt.sign({ userId: userSave._id, iat: Math.floor(Date.now() / 1000) - 30 }, 'walletApp');
+
+//                                                     commonFunction.sendSms("Dear " + req.body.firstName + "," + " " + " Your account is successfully signup  with having  otp verification : " + otp, + req.body.mobileNumber, (error, sendMessage) => {
+//                                                         if (error) {
+//                                                             response(res, ErrorCode.SOMETHING_WRONG, [], ErrorMessage.SOMETHING_WRONG);
+//                                                         } else {
+//                                                             response(res, SuccessCode.OTP_SEND, { userDetail: userSave, token: token }, SuccessMessage.OTP_SEND);
+//                                                         }
+//                                                     })
+
+//                                                 }
+//                                             })
+
+//                                         }
+//                                     }
+//                                 })
+//                             }
+//                         }
+//                     })
+//                 }
+//             }
+//         })
+//     } catch (error) {
+//         response(res, ErrorCode.SOMETHING_WRONG, [], ErrorMessage.SOMETHING_WRONG);
+//     }
+// }
+
+
+/**
+  * Function Name : socialSignup
+  * Description   : Signup and login with google plus and facebook
+  *
+  * @return response
+  */
+// const socialSignup = (req, res) => {
+//     try {
+//         userModel.findOne({ socialId: req.body.socialId, status: { $ne: "DELETED" } }, (error, checkSocialId) => {
+//             console.log("checkSocialId======>>>", checkSocialId)
+//             if (error) {
+//                 response(res, ErrorCode.SOMETHING_WRONG, [], ErrorMessage.SOMETHING_WRONG);
+//             } else if (checkSocialId) {
+//                 if (checkSocialId.verifyOtp == false) {
+//                     var otp = commonFunction.getOTP();
+
+//                     userModel.findOneAndUpdate({ socialId: req.body.socialId }, { $set: { otp: otp } }, { new: true }, (error, otpUpdate) => {
+//                         console.log("sdsdgdjkjfkdhjkfhkdjfh=======", otpUpdate)
+//                         if (error) {
+//                             response(res, ErrorCode.SOMETHING_WRONG, [], ErrorMessage.SOMETHING_WRONG);
+//                         } else {
+//                               commonFunction.sendSms("Dear " + checkSocialId.firstName + "," + " " + " Your OTP is : " + otp, + checkSocialId.mobileNumber, (error, sendMessage) => {       
+//                                         if (error) {
+//                                               response(res, ErrorCode.SOMETHING_WRONG, [], ErrorMessage.SOMETHING_WRONG);
+//                                         } else {
+//                                             console.log("fghhjkjhklauldshloduhfoe======",checkSocialId.mobileNumber)
+//                                                    response(res, SuccessCode.OTP_SEND, sendMessage, SuccessMessage.OTP_SEND);
+//                                                     }
+//                                                 })
+
+//                             var token = jwt.sign({ userId: checkSocialId._id, iat: Math.floor(Date.now() / 1000) - 30 }, 'walletApp');
+//                             response(res, SuccessCode.SUCCESS, { otpUpdate: otpUpdate, token: token }, SuccessMessage.OTP_SEND);
+//                         }
+//                     })
+
+//                 } else {
+//                     var token = jwt.sign({ userId: checkSocialId._id, iat: Math.floor(Date.now() / 1000) - 30 }, 'walletApp');
+//                     response(res, SuccessCode.SUCCESS, { userDetail: checkSocialId, token: token }, SuccessMessage.LOGIN_SUCCESS);
+//                 }
+//             } else {
+
+//                 var token = jwt.sign({ iat: Math.floor(Date.now() / 1000) - 30 }, 'walletApp');
+//                 response(res, SuccessCode.OTP_SEND, { userDetail: result5, token: token }, SuccessMessage.OTP_SEND);
+//             }
+//         })
+
+//     }
+
+
+
+
+
+//     catch (error) {
+//         response(res, ErrorCode.SOMETHING_WRONG, [], ErrorMessage.SOMETHING_WRONG);
+//     }
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const signup = (req, res) => {
+  try {
+    var otp = commonFunction.getOTP();
+    console.log("25>>>>>>..", req.body);
+    stripe.accounts.create(
+      {
+        type: "custom",
+        email: req.body.email,
+        country: "US",
+        requested_capabilities: ["card_payments"]
+      },
+      (err, result) => {
+        console.log("account id ====>>>", result.id);
+        if (err) {
+          res.send({
+            responseCode: 500,
+            responseMessage: "Internal server error",
+            err
+          });
+        } else {
+          var query = {
+            $and: [
+              { status: { $in: ["ACTIVE", "BLOCKED"] } },
+              {
+                $or: [
+                  { email: req.body.email },
+                  { mobileNumber: req.body.mobileNumber },
+                  { userName: req.body.userName }
+                ]
+              }
+            ]
+          };
+
+          // var data = {
+          // userName: req.body.userName,
+          // email: req.body.email,
+          // mobileNumber: req.body.mobileNumber
+          // }
+          console.log("50>>>>>>>>>");
+          userModel.findOne(query, (error, checkUserName) => {
+            console.log("checksum ====>>>", checkUserName);
+            if (error) {
+              response(
+                res,
+                ErrorCode.SOMETHING_WRONG,
+                [],
+                ErrorMessage.SOMETHING_WRONG
+              );
+            } else if (checkUserName) {
+              req.body.password = bcrypt.hashSync(req.body.password, salt);
+
+              if (checkUserName && checkUserName.verifyOtp == false) {
+                commonFunction.sendSms(
+                  "Dear " +
+                  req.body.firstName +
+                  "," +
+                  " " +
+                  " Your account is successfully signup with having otp verification : " +
+                  otp,
+                  +req.body.mobileNumber,
+                  (error, sendMessage) => {
+                    if (error) {
+                      response(
+                        res,
+                        ErrorCode.SOMETHING_WRONG,
+                        [],
+                        ErrorMessage.SOMETHING_WRONG
+                      );
+                    } else {
+                      userModel.findByIdAndUpdate(
+                        checkUserName._id,
+                        req.body,
+                        { new: true },
+                        (err1, result1) => {
+                          if (err1) {
+                            response(
+                              res,
+                              ErrorCode.SOMETHING_WRONG,
+                              [],
+                              ErrorMessage.SOMETHING_WRONG
+                            );
+                          } else if (!result1) {
+                            response(res, 400, [], "not found");
+                          } else {
+                            response(res, 201, [], "SignUp successfully");
+                          }
+                        }
+                      );
+                    }
+                  }
+                );
+              } else {
+                if (result.email == req.body.email) {
+                  res.send({
+                    response_code: 404,
+                    response_message: "Email already exists"
+                  });
+                } else if (result.mobileNumber == req.body.mobileNumber) {
+                  res.send({
+                    response_code: 404,
+                    response_message: "Mobile number already exists"
+                  });
+                } else {
+                  res.send({
+                    response_code: 404,
+                    response_message: "User name already exists"
+                  });
+                }
+              }
+            } else {
+              req.body.password = bcrypt.hashSync(req.body.password, salt);
+              // var token = jwt.sign({ userId: checkUserName._id, iat: Math.floor(Date.now() / 1000) - 30 }, 'walletApp');
+              // req.body.token = token,
+              var number = req.body.mobileNumber; //  req.body.mobileNumber = +919430666999//  number = +919430666999 
+              console.log("number >>>>>100>>>", number);
+              var splitNumber = number.slice(1);// splitNumber = 919430666999
+              console.log("splitNumber >>>>>102>>>", splitNumber);
+              req.body.accountId = result.id;
+              var data = {
+                userName: req.body.userName,
+                firstName: req.body.firstName,
+                middleName: req.body.middleName,
+                lastName: req.body.lastName,
+                email: req.body.email,
+                country: req.body.country,
+                mobileNumber: req.body.mobileNumber,
+                splitMobileNumber: splitNumber,
+                password: req.body.password,
+                otp: otp,
+                countryCode: req.body.countryCode
+              };
+              var obj = new userModel(data);
+              obj.save((error3, userSave) => {
+                console.log("saved one ====>>>", userSave);
+                if (error3) {
+                  response(
+                    res,
+                    ErrorCode.SOMETHING_WRONG,
+                    [],
+                    ErrorMessage.SOMETHING_WRONG
+                  );
+                } else {
+                  var token = jwt.sign(
+                    {
+                      userId: userSave._id,
+                      iat: Math.floor(Date.now() / 1000) - 30
+                    },
+                    "walletApp"
+                  );
+                  response(
+                    res,
+                    201,
+                    { userDetail: userSave, token: token },
+                    "SignUp successfully"
+                  );
+                }
+              });
+            }
+          });
+        }
+      }
+    );
+  } catch (error) {
+    response(res, ErrorCode.SOMETHING_WRONG, [], ErrorMessage.SOMETHING_WRONG);
+  }
+};
+
+const search = (req, res) => {
+  try {
+    if (req.body.search == "+") {  // {  "search" : "+"   }
+      console.log(">>>304>>>", req.body);
+      userModel.find(
+        { mobileNumber: { $regex: ".*" + req.body.search + ".*" } },
+        (err, result) => {
+          console.log(">>>>>>>>>>>>>>300>>>>>", err, result);
+          if (err) {
+            res.send({
+              responseCode: 500,
+              responseMessage: "Internal server error",
+              err
+            });
+          } else if (result.docs == false) {
+            res.send({ responseCode: 404, responseMessage: "Data not found" });
+          } else {
+            res.send({
+              responseCode: 200,
+              responseMessage: "Data found successfully",
+              result
+            });
+          }
+        }
+      );
+    } else { // {  "search" : "+9"   }
+      console.log("inside else>>>304>>>", req.body);
+      var number = req.body.search; //  number = req.body.search = +9
+      console.log("number >>>>>100>>>", number);
+      var splitNumber = number.slice(1);// splitnumber = 9
+      console.log("splitNumber >>>>>102>>>", splitNumber);
+      userModel.find({ splitMobileNumber: { $regex: splitNumber } }, (err, result) => {
+        console.log(">>>>>>>>>>>>>>315>>>>>", err, result);
+        if (err) {
+          res.send({
+            responseCode: 500,
+            responseMessage: "Internal server error",
+            err
+          });
+        } else if (result.docs == false) {
+          res.send({ responseCode: 404, responseMessage: "Data not found" });
+        } else {
+          res.send({
+            responseCode: 200,
+            responseMessage: "Data found successfully",
+            result
+          });
+        }
+      });
+    }
+  } catch (error) {
+    res.send({ responseCode: 404, responseMessage: "error in catch", error });
+  }
+};

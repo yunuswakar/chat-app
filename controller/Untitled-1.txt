@@ -1,0 +1,70 @@
+     Number exists api 
+api still not working properly. Search not working. Response code has been change to 201 from 200 again for empty array.
+
+Api needed
+I will be sending the contact number eg, "+91-7065152995". Check if the number is valid and is present in the DB(and not the user’s own number) or not and return the userDetails if the condition is true.
+Message dated 28 March on hangout. Api not received yet.
+
+Other apis needed:
+
+Receive Section:
+
+1. Search on all the user’s by name or mobile number or username. Return complete user’s list if there is no search key. The user should not see himself in this list.
+2. Receive notification for the request.
+3. Notification list api.
+4. Reject request or accept request received.
+5. Notification to requester that the request has been accepted or rejected.
+
+Admin Panel:
+1. Get FAQ list
+2. Edit FAQ
+3. Add FAQ
+4. View current email id
+5. View current transaction and conversion fees
+
+const regex=new Regex("^/[+]")
+
+
+// acct_1EIG3MAWX9DP7PgU - remittance account id
+ //    stripe.accounts.create({
+                                                        //         // country: 'US',
+                                                        //          type: 'custom',
+                                                        //          email:"mansi@gmail.com",
+                                                        //         country: 'US',
+                                                        //        // type: 'custom',
+                                                        //         requested_capabilities: ['card_payments'],
+
+                                                        //       },(err,result)=>{
+
+                                                        //         console.log("account id ====>>>",err,result)
+                                                        //       });
+
+                                                        //     }
+
+
+
+
+
+
+
+
+
+
+
+
+         if (pluswalaKey.charAt(0) == '+') {
+               newStr =  pluswalaKey.slice(1)
+           } else {
+               newStr = ejabberdMobileNo
+           }
++++
+abbbb >>>>>>>    newStr     iss key prr search krr lo
+    
+ye wala h >>>>>>>>>
+
+
+     if (pluswalaKey.charAt(0) == '+') {
+               newStr =  pluswalaKey.slice(1)
+           } else {
+               newStr =  pluswalaKey   
+           }

@@ -1,0 +1,42 @@
+{
+    "development": {
+        "config_id": "development",
+        "app_name": "walletApp",
+        "app_desc": "walletApp",
+        "node_port": 1600,
+        "json_indentation": 4,
+        "host":"localhost",
+        "basicAuthUser":"walletapp",
+        "basicAuthKey":"SFDSA78FSA7FFDSAFJRE32DSF98DSGFDGFDSH9H8FDSGFR4R549898DFDS",
+        "database": "remittance_walletApp",
+        "user": "node-trainee@mobiloitte.com",
+        "pass": "Mobiloitte1",      
+        "cloud_name": "dxpgsnqbw",
+        "api_key": "549273191543456",
+        "api_secret": "eN8D-qIT_VlPrtuX-kRYCg8zVdw"
+    },
+    "staging": {
+        "config_id": "staging",
+        "node_port": 1524,
+        "database": "remittance_walletApp",
+        "host":"localhost",
+        "basicAuthUser":"walletapp",
+        "user":"node-trainee@mobiloitte.com",
+        "pass":"Mobiloitte1",
+        "basicAuthKey":"SFDSA78FSA7FFDSAFJRE32DSF98DSGFDGFDSH9H8FDSGFR4R549898DFDS",
+        "cloud_name": "dxpgsnqbw",
+        "api_key": "549273191543456",
+        "api_secret": "eN8D-qIT_VlPrtuX-kRYCg8zVdw"
+    },
+
+    "production": {
+        "config_id": "production",
+        "node_port": 1600,
+        "database": "remittance_walletApp",
+        "host":"localhost",
+        "basicAuthUser":"walletapp",
+        "user":"pramodgiri54@gmail.com",
+        "pass":"pramod@1996",
+        "basicAuthKey":"SFDSA78FSA7FFDSAFJRE32DSF98DSGFDGFDSH9H8FDSGFR4R549898DFDS"
+    }
+}
