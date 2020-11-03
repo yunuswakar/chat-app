@@ -1,0 +1,60 @@
+{
+    "development": {
+        "config_id": "development",
+        "app_name": "socialMedia",
+        "app_desc": "socialMedia desc",
+        "node_port": 2020,
+        "json_indentation": 3,
+        "database":"socialMedia-dev",
+        "nodemailer":{
+            "pass": "Mobiloitte1",
+            "user": "node-trainee@mobiloitte.com"
+        },
+        "twilio": {
+            "sid": "ACf786a64203b2524f8ee2878ee632bbe7",
+            "auth_token": "0f53e378507e1543cd5e2ddfcf5389a1",
+            "number":"(855) 572-8559"
+        },
+        "appLink":"http://localhost:2020/signup?ref=",
+        "websiteURL": "http://ec2-35-176-66-190.eu-west-2.compute.amazonaws.com:1642/jobs/job",
+        "productURL":"http://ec2-35-176-66-190.eu-west-2.compute.amazonaws.com:1642/marketing-dashboard",
+        "adminURL": "http://ec2-35-176-66-190.eu-west-2.compute.amazonaws.com:1501",
+        "biddURL": "http://ec2-35-176-66-190.eu-west-2.compute.amazonaws.com:1642/bidding",
+        "orderURL": "http://ec2-35-176-66-190.eu-west-2.compute.amazonaws.com:1642/marketing-dashboard",
+        "auctionOrder":"http://ec2-35-176-66-190.eu-west-2.compute.amazonaws.com:1642/bidding",
+        "jobURL":"http://ec2-35-176-66-190.eu-west-2.compute.amazonaws.com:1642/jobs/viewPostedJob",
+        "jwtSecretKey":"sUpER@SecReT",
+        "url":"localhost:2020"
+    },
+    "staging": {
+        "config_id": "staging",
+        "node_port": 1501,
+        "database": "socialMedia-stag",
+        "appLink":"https://ec2-35-176-66-190.eu-west-2.compute.amazonaws.com:1501/signup?ref=",
+        "jwtSecretKey":"sUpER@SecReT",
+        "url":"ec2-35-176-66-190.eu-west-2.compute.amazonaws.com:1501",
+        "websiteURL": "http://ec2-35-176-66-190.eu-west-2.compute.amazonaws.com:1642/jobs/job",
+        "productURL": "http://ec2-35-176-66-190.eu-west-2.compute.amazonaws.com:1642/marketing-dashboard",
+        "biddURL": "http://ec2-35-176-66-190.eu-west-2.compute.amazonaws.com:1642/bidding",
+        "jobURL": "http://ec2-35-176-66-190.eu-west-2.compute.amazonaws.com:1642/jobs/viewPostedJob",
+        "auctionOrder": "http://ec2-35-176-66-190.eu-west-2.compute.amazonaws.com:1642/bidding",
+        "adminURL": "http://ec2-35-176-66-190.eu-west-2.compute.amazonaws.com:1501",
+        "orderURL": "http://ec2-35-176-66-190.eu-west-2.compute.amazonaws.com:1642/marketing-dashboard",
+        "nodemailer":{
+            "pass": "Mobiloitte1",
+            "user": "node-trainee@mobiloitte.com"
+        },
+        "twilio": {
+            "sid": "ACf786a64203b2524f8ee2878ee632bbe7",
+            "auth_token": "0f53e378507e1543cd5e2ddfcf5389a1",
+            "number":"(855) 572-8559"
+        }
+    },
+    "production": {
+        "config_id": "production",
+        "node_port": 4141,
+        "database": "socialMedia-prod",
+        "appLink":"",
+        "jwtSecretKey":"sUpER@SecReT"
+    }
+}
