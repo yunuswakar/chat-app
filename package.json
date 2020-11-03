@@ -1,0 +1,42 @@
+{
+  "name": "knowit-app-20043681-node",
+  "version": "1.0.0",
+  "description": "First Commit",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://git.mobiloitte.com/root/knowit-app-20043681-node.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^3.2.0",
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.19.0",
+    "cloudinary": "^1.21.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "fcm-push": "^1.1.3",
+    "https": "^1.0.0",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.15",
+    "mongoose": "^5.9.11",
+    "mongoose-paginate": "^5.0.3",
+    "morgan": "^1.10.0",
+    "node-geocoder": "^3.27.0",
+    "nodemailer": "^6.4.6",
+    "nodemon": "^2.0.3",
+    "qrcode": "^1.4.4",
+    "request": "^2.88.2",
+    "requestify": "^0.2.5",
+    "swagger-jsdoc": "^4.0.0",
+    "swagger-ui-express": "^4.1.4",
+    "twilio": "^3.43.0"
+  },
+  "devDependencies": {}
+}

@@ -1,0 +1,59 @@
+{
+    "development": {
+        "config_id": "development",
+        "app_name": "knowit",
+        "app_desc": "knowit",
+        "node_port": 2021,
+        "json_indentation": 4,
+        "host": "localhost",
+        "swaggerURL": "localhost:2021",
+        "basicAuthUser": "",
+        "basicAuthKey": "",
+        "database": "knowIt-dev",
+        "nodemailer": {
+            "user": "node-trainee@mobiloitte.com",
+            "pass": "Mobiloitte1"
+        },
+        "cloudinary": {
+            "cloud_name": "dl2d0v5hy",
+            "api_key": "841684319665911",
+            "api_secret": "kG5j1sXJT3eeNAp5CtpZgIdfQzM"
+        }
+    },
+    "staging": {
+        "config_id": "staging",
+        "node_port": 1536,
+        "database": "knowit-stag",
+        "host": "localhost",
+        "swaggerURL": "ec2-35-176-66-190.eu-west-2.compute.amazonaws.com:1536",
+        "basicAuthUser": "",
+        "couponLink": "ec2-35-176-66-190.eu-west-2.compute.amazonaws.com:1536",
+        "user": "node-trainee@mobiloite.com",
+        "pass": "Mobiloitte1",
+        "basicAuthKey": "",
+        "cloudinary": {
+            "cloud_name": "dl2d0v5hy",
+            "api_key": "841684319665911",
+            "api_secret": "kG5j1sXJT3eeNAp5CtpZgIdfQzM"
+        },
+        "nodemailer": {
+            "user": "pramodgiri54@gmail.com",
+            "pass": "pramod@1996"
+        }
+    },
+    "production": {
+        "config_id": "production",
+        "node_port": 1600,
+        "database": "knowIt-web",
+        "host": "localhost",
+        "basicAuthUser": "",
+        "user": "pramodgiri54@gmail.com",
+        "pass": "pramod@1996",
+        "basicAuthKey": "",
+        "cloudinary": {
+            "cloud_name": "",
+            "api_key": "",
+            "api_secret": ""
+        }
+    }
+}

@@ -1,0 +1,580 @@
+const router = require('express').Router();
+const userController = require('../../controllers/userController');
+const auth = require('../../middleware/auth');
+
+/**
+ * @swagger
+ * /api/v1/user/signUp:
+ *   post:
+ *     tags:
+ *        - signUp
+ *     description: Check for Social existence and give the access Token 
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: firstName
+ *         description: firstName
+ *         in: formData
+ *         required: true
+ *       - name: lastName
+ *         description: lastName
+ *         in: formData
+ *         required: true
+ *       - name: email
+ *         description: email
+ *         in: formData
+ *         required: true
+ *       - name: phoneNumber
+ *         description: phoneNumber
+ *         in: formData
+ *         required: true
+ *       - name: password
+ *         description: password
+ *         in: formData
+ *         required: true
+ *       - name: passCodeStatus
+ *         description: passCodeStatus:true/false
+ *         in: formData
+ *         required: false
+ *       - name: passCode
+ *         description: passCode
+ *         in: formData
+ *         required: false
+ *     responses:
+ *       200:
+ *         description: Success. 
+ *       404:
+ *         description: Data saved sucessfully.
+ *       400:
+ *         description: Fields are required.
+ *       500:
+ *         description: Internal Server Error
+ */
+router.post('/signUp', userController.signUp)
+/**
+ * @swagger
+ * /api/v1/user/addUserDetails:
+ *   post:
+ *     tags:
+ *        - signUp
+ *     description: Check for Social existence and give the access Token 
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: userId
+ *         description: userId
+ *         in: formData
+ *         required: true
+ *       - name: birthday
+ *         description: birthday
+ *         in: formData
+ *         required: true
+ *       - name: gender
+ *         description: gender
+ *         in: formData
+ *         required: true
+ *       - name: zipCode
+ *         description: zipCode
+ *         in: formData
+ *         required: true
+ *       - name: addressLine1
+ *         description: addressLine1
+ *         in: formData
+ *         required: true
+ *       - name: addressLine2
+ *         description: addressLine2
+ *         in: formData
+ *         required: false
+ *       - name: state
+ *         description: state
+ *         in: formData
+ *         required: false
+ *       - name: city
+ *         description: city
+ *         in: formData
+ *         required: false
+ *     responses:
+ *       200:
+ *         description: Success. 
+ *       404:
+ *         description: Data saved sucessfully.
+ *       400:
+ *         description: Fields are required.
+ *       500:
+ *         description: Internal Server Error
+ */
+router.post('/addUserDetails', userController.addUserDetails)
+/**
+ * @swagger
+ * /api/v1/user/setPassCode:
+ *   post:
+ *     tags:
+ *        - setting management
+ *     description: Check for Social existence and give the access Token 
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: token
+ *         description: token
+ *         in: header
+ *         required: true
+ *       - name: passCode
+ *         description: passCode in number
+ *         in: formData
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: Success. 
+ *       404:
+ *         description: Data saved sucessfully.
+ *       400:
+ *         description: Fields are required.
+ *       500:
+ *         description: Internal Server Error
+ */
+
+router.post('/setPassCode',auth.verifyToken,userController.setPassCode)
+
+/**
+ * @swagger
+ * /api/v1/user/login:
+ *   post:
+ *     tags:
+ *        - signUp
+ *     description: Check for Social existence and give the access Token 
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: email
+ *         description: email
+ *         in: formData
+ *         required: true
+ *       - name: password
+ *         description: password
+ *         in: formData
+ *         required: true
+ *       - name: passCode
+ *         description: passCode optional
+ *         in: formData
+ *         required: false
+ *     responses:
+ *       200:
+ *         description: Success. 
+ *       404:
+ *         description: Data saved sucessfully.
+ *       400:
+ *         description: Fields are required.
+ *       500:
+ *         description: Internal Server Error
+ */
+router.post('/login', userController.login)
+
+router.post('/getQrcode',userController.getQrcode)
+/**
+ * @swagger
+ * /api/v1/user/forgotPassword:
+ *   post:
+ *     tags:
+ *        - signUp
+ *     description: Check for Social existence and give the access Token 
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: mobileNumber
+ *         description: mobileNumber/email
+ *         in: formData
+ *         required: true
+ 
+ *     responses:
+ *       200:
+ *         description: Success. 
+ *       404:
+ *         description: Data saved sucessfully.
+ *       400:
+ *         description: Fields are required.
+ *       500:
+ *         description: Internal Server Error
+ */
+router.post('/forgotPassword',userController.forgotPassword)
+
+/**
+ * @swagger
+ * /api/v1/user/resetPassword:
+ *   post:
+ *     tags:
+ *        - signUp
+ *     description: Check for Social existence and give the access Token 
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: userId
+ *         description: userId
+ *         in: formData
+ *         required: true
+ *       - name: newPassword
+ *         description: newPassword
+ *         in: formData
+ *         required: true
+ *       - name: confirmPassword
+ *         description: confirmPassword
+ *         in: formData
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: Success. 
+ *       404:
+ *         description: Data saved sucessfully.
+ *       400:
+ *         description: Fields are required.
+ *       500:
+ *         description: Internal Server Error
+ */
+router.post('/resetPassword', userController.resetPassword)
+/**
+ * @swagger
+ * /api/v1/user/otpVerify:
+ *   post:
+ *     tags:
+ *        - signUp
+ *     description: Check for Social existence and give the access Token 
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: phoneNumber
+ *         description: phoneNumber/email
+ *         in: formData
+ *         required: true
+ *       - name: otp
+ *         description: otp
+ *         in: formData
+ *         required: true
+
+ *     responses:
+ *       200:
+ *         description: Success. 
+ *       404:
+ *         description: Data saved sucessfully.
+ *       400:
+ *         description: Fields are required.
+ *       500:
+ *         description: Internal Server Error
+ */
+router.post('/otpVerify',userController.otpVerify)
+/**
+ * @swagger
+ * /api/v1/user/myProfile:
+ *   get:
+ *     tags:
+ *        - signUp
+ *     description: Check for Social existence and give the access Token 
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: token
+ *         description: token
+ *         in: header
+ *         required: true
+
+ *     responses:
+ *       200:
+ *         description: Success. 
+ *       404:
+ *         description: Data saved sucessfully.
+ *       400:
+ *         description: Fields are required.
+ *       500:
+ *         description: Internal Server Error
+ */
+// router.get('/myProfile',auth.verifyToken,userController.myProfile)
+router.get('/myProfile',userController.myProfile)
+
+/**
+ * @swagger
+ * /api/v1/user/contactSupport:
+ *   post:
+ *     tags:
+ *        - signUp
+ *     description: Check for Social existence and give the access Token 
+ *     produces:
+ *       - application/json
+ *     parameters:
+*       - name: token
+ *         description: token
+ *         in: header
+ *         required: true
+ *       - name: selectPurpose
+ *         description: selectPurpose
+ *         in: formData
+ *         required: true
+ *       - name: title
+ *         description: title
+ *         in: formData
+ *         required: true
+ *       - name: message
+ *         description: message
+ *         in: formData
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: Success. 
+ *       404:
+ *         description: Data saved sucessfully.
+ *       400:
+ *         description: Fields are required.
+ *       500:
+ *         description: Internal Server Error
+ */
+
+router.post('/contactSupport',auth.verifyToken,userController.contactSupport)
+
+/**
+ * @swagger
+ * /api/v1/user/resetPassCode:
+ *   post:
+ *     tags:
+ *        - signUp
+ *     description: Check for Social existence and give the access Token 
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: token
+ *         description: token
+ *         in: header
+ *         required: true
+ *       - name: passCode
+ *         description: your current passCode
+ *         in: formData
+ *         required: true
+ *       - name: newPassCode
+ *         description: newPassCode
+ *         in: formData
+ *         required: true
+ *       - name: confirmPassCode
+ *         description: confirmPassCode
+ *         in: formData
+ *         required: true
+ *     responses:
+ *       200:
+ *         description: Success. 
+ *       404:
+ *         description: Data saved sucessfully.
+ *       400:
+ *         description: Fields are required.
+ *       500:
+ *         description: Internal Server Error
+ */
+
+
+router.post('/resetPassCode',auth.verifyToken,userController.resetPassCode)
+
+
+router.post('/shareApp',userController.shareApp)
+/**
+ * @swagger
+ * /api/v1/user/ratingByUser:
+ *   post:
+ *     tags:
+ *        - setting management
+ *     description: Check for Social existence and give the access Token 
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: token
+ *         description: token
+ *         in: header
+ *         required: true
+ *       - name: rating
+ *         description: rating in number
+ *         in: formData
+ *         required: true
+
+ *     responses:
+ *       200:
+ *         description: Success. 
+ *       404:
+ *         description: Data saved sucessfully.
+ *       400:
+ *         description: Fields are required.
+ *       500:
+ *         description: Internal Server Error
+ */
+router.post('/ratingByUser',auth.verifyToken,userController.ratingByUser)
+
+/**
+ * @swagger
+ * /api/v1/user/editProfile:
+ *  post:
+ *    tags:
+ *       - signUp
+ *    produces:
+ *      - application/json
+ *    parameters:
+ *       - name: token
+ *         description: token
+ *         in: header
+ *         required: true
+ *       - in: body
+ *         name: user
+ *         description: Edit user.
+ *         schema:
+ *           type: object
+ *           properties:
+ *             firstName:
+ *               type: string
+ *             lastName:
+ *               type: string
+ *             email:
+ *               type: string
+ *             phoneNumber:
+ *               type: string
+ *             userDetail:
+ *               type: array
+ *               items:
+ *                type: object
+ *                properties:
+ *                 birthday:
+ *                   type: string
+ *                 gender:
+ *                   type: string
+ *                 zipCode:
+ *                   type: string
+ *                 addressLine1:
+ *                   type: string
+ *                 addressLine2:
+ *                   type: string
+ *                 state:
+ *                   type: string
+ *                 city:
+ *                   type: string
+
+ *    responses:
+ *       200:
+ *         description: Data is saved successfully.
+ *       404:
+ *         description: Already exists.
+ *       500:
+ *         description: Internal Server Error.   
+ */
+
+
+router.post('/editProfile',auth.verifyToken,userController.editProfile)
+
+/**
+ * @swagger
+ * /api/v1/user/helpCenter:
+ *   post:
+ *     tags:
+ *        - help center
+ *     description: Check for Social existence and give the access Token 
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: token
+ *         description: token
+ *         in: header
+ *         required: true
+ *       - name: faqId
+ *         description: faqId
+ *         in: formData
+ *         required: false
+ *       - name: search
+ *         description: search
+ *         in: formData
+ *         required: false
+
+ *     responses:
+ *       200:
+ *         description: Success. 
+ *       404:
+ *         description: Data saved sucessfully.
+ *       400:
+ *         description: Fields are required.
+ *       500:
+ *         description: Internal Server Error
+ */
+
+router.post('/helpCenter',auth.verifyToken,userController.helpCenter)
+
+
+/**
+ * @swagger
+ * /api/v1/user/userHistory:
+ *   post:
+ *     tags:
+ *        - help center
+ *     description: Check for Social existence and give the access Token 
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: userId
+ *         description: userId
+ *         in: formData
+ *         required: true
+
+ *     responses:
+ *       200:
+ *         description: Success. 
+ *       404:
+ *         description: Data saved sucessfully.
+ *       400:
+ *         description: Fields are required.
+ *       500:
+ *         description: Internal Server Error
+ */
+router.post('/userHistory',userController.userHistory)
+
+/**
+ * @swagger
+ * /api/v1/user/getQrCode:
+ *   get:
+ *     tags:
+ *       - signup
+ *     description: Check for Social existence and give the access Token 
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: userId
+ *         description: userId
+ *         in: header
+ *         required: true
+ * 
+ *     responses:
+ *       200:
+ *         description: Details have been fetched successfully.
+ *       404:
+ *         description: This user does not exist.
+ *       500:
+ *         description: Internal Server Error
+ */
+router.post('/getQrCode',userController.getQrCode)
+
+/**
+ * @swagger
+ * /api/v1/user/viewRatting:
+ *   get:
+ *     tags:
+ *        - signUp
+ *     description: Check for Social existence and give the access Token 
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: token
+ *         description: token
+ *         in: header
+ *         required: true
+
+ *     responses:
+ *       200:
+ *         description: Success. 
+ *       404:
+ *         description: Data saved sucessfully.
+ *       400:
+ *         description: Fields are required.
+ *       500:
+ *         description: Internal Server Error
+ */
+
+router.get('/viewRatting',auth.verifyToken,userController.viewRatting)
+
+
+module.exports = router;
