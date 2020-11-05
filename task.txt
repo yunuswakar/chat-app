@@ -1,0 +1,225 @@
+Create an api of date filter in coupon history(P ublished Coupon) in retailer managemen tMethod: POST (DONE) (API:-couponsLists)
+
+
+Create an api of view the coupon details in retailer managementMethod: GET (DONE)	 (API:-couponsLists)
+
+
+BACKLOG-
+Create an api of view retailer in retailer managementMethod: POST	(DONE) (API:-allRetailerLists)
+
+Create an api of get list of all account managersMethod: GET	(DONE) (API:-allRetailerLists)
+
+Create an api of view the account manager nameMethod: GET	(DONE) (API:-allRetailerLists)
+
+Create an api of block/unblock retailer in retailer managementMethod: POST	() (DONE) (API:-statusChange)
+
+Create an api of date filter in coupon history(Submitted Coupon) in retailer managementMethod: POST	 (DONE)  (API:-couponsLists)
+
+Create an api of view coupon history(Published Coupon) in retailer managementMethod: POST	(DONE)  (API:-couponsLists)
+
+Create an api of view the coupon details in retailer managementMethod: GET	(DONE)  (API:-couponsLists)
+
+Create an api of date filter in coupon history(P ublished Coupon) in retailer managemen tMethod: POST (DONE)  (API:-couponsLists)
+
+Create an api of date filter in coupon history(W ithdrawn Coupon) in retailer managemen tMethod: POST (DONE)  (API:-couponsLists)
+
+
+6 march
+Create an api of date filter in coupon history(R ejected Coupon) in retailer managemen tMethod: POST (DONE)  (API:-couponsLists)
+
+Create an api of view coupon history(R ejected Coupon) in retailer managemen tMethod: POST (DONE)  (API:-couponsLists)
+
+
+7 march-
+Create an api of view coupon history(E xpired Coupon) in retailer managemen tMethod: GET (DONE)  (API:-couponsLists)
+
+Create an api of date filter in coupon history(Expired Coupon) in retailer managementMethod: POST	 (DONE)  (API:-couponsLists)
+
+
+11 march-
+Create an api of view the coupon history details-approve/re ject in retailer management Method: GET (DONE)  (API:-couponsLists)
+
+
+Create an api of add comment when rejecting the coupon in retailer management Method: POST	 (API:-couponStatus) // Please check once
+
+
+
+12 march
+Create an api of view coupon in retailer management Method: GET  (API:-couponsLists)
+    
+Create an api of view website section and view the product details in retailer managemen tMethod: GET   ?? ******* API to view retailer Details  on userCollections.
+
+
+13 march
+
+Create an api of approve/r eject the website in retailer managemen tMethod: POST (API:-statusChange)
+
+Create an api of add comment when rejecting the website in retailer managementMethod: POST	 (API:-statusChange)
+
+
+
+
+
+Know it Admin Panel
+
+
+ 
+Share
+FileEditViewInsertFormatDataToolsAdd-onsHelp
+    
+ 
+   
+
+ 
+A	B	C	D	E	F	G	H	I	J	K	L	M	N	O	P	Q	R	S	T	U	V	W	X	Y	Z
+1
+Milestone	Screen Name	
+Nature of Task
+Tasks	Resource	HH:MM	Predecessor	Start	End																	
+2
+Login	Api Creation	Create an api of login
+Method: POST																						
+3
+Api Creation	Create an api of forgot password
+Method: POST																						
+4
+Api Creation	Create an api of reset password
+Method: POST																						
+5
+Api Creation	Create an api of get my profile of admin
+Method: GET																						
+6
+Api Creation	Create an api of edit profile of admin
+Method: PUT																						
+7
+Customer Management
+Api Creation	
+Create an api of add customer in customer management
+Method: POST
+8
+Api Creation	
+Create an api of view customer in customer management
+Method: POST
+9
+Api Creation	
+Create an api of edit customer in customer management
+Method: PUT
+10
+Api Creation	
+Create an api of delete customer in customer management
+Method: GET
+11
+Api Creation	
+Create an api of list of customers in customer management
+Method: POST
+12
+Api Creation	
+Create an api of search customer by name,email and mobile no
+with pagination
+Method: POST
+13
+Profile	Api Creation	Change password for Admin Method: POST																						
+14
+Static Content	Api Creation	Edit Static content Method :PUT																						
+15
+Api Creation	View static content :Method:get																						
+16
+Api Creation	List static content Method :PoST																						
+17
+Api Creation	Change password for Admin Method: POST																						
+18
+Support	Api Creation	List Support Method: POST																						
+19
+Api Creation	view Support Method: POST																						
+20
+Faq	Api Creation	Add Faq Method: POST																						
+21
+Api Creation	List Faq Method: POST																						
+22
+Api Creation	View Faq Method: GET																						
+23
+Api Creation	Edit Faq Method: POST																						
+24
+Api Creation	Delete Faq Method: POST																						
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+ 	  	
+Sheet1
+  	
+
+
+
