@@ -1,816 +1,402 @@
-var express = require("express");
-var router = express.Router();
-const USERS = require("../app/auth/controller/auth.controller");
-const STATIC = require("../app/static/controller/static.controller");
-const SUBSCRIPTION = require("../app/subscription/controller/subscription.controller");
-const STORE = require("../app/store/controller/store.controller");
-const CRYSTAL = require("../app/crystal/controller/crystal.controller");
-const POST = require("../app/post/controller/post.controller");
-const HOME = require("../app/home/controller/home.controller");
-const RATING = require("../app/rating/controller/rating.controller");
-const NOTIFICATIONS = require("../app/notifications/controller/notifications.controller");
-const ADDEDCRYSTAL = require("../app/addedCrystal/controller/addedCrystal.controller");
-const OPERATIONLOG = require("../app/operationLog/controller/operationLog.controller");
-const CRITERIA = require("../app/contentCriteria/controller/contentCriteria.controller");
-const UPDATETABLE = require("../app/updateTable/controller/updateTable.controller");
-const PAGE = require("../app/pages/controller/pages.controller");
-const CREDIT = require("../app/credit/controller/credit.controller");
-
+/*
+@copyright : ToXSL Technologies Pvt. Ltd. < www.toxsl.com >
+@author     : Shiv Charan Panjeta < shiv@toxsl.com >
+ 
+All Rights Reserved.
+Proprietary and confidential :  All information contained herein is, and remains
+the property of ToXSL Technologies Pvt. Ltd. and its partners.
+Unauthorized copying of this file, via any medium is strictly prohibited.
+*/
+const express = require("express");// import express framework to use its dependency
+const router = express.Router();// create express router from express
+// import controllers of used api
+const USERS = require("../app/userServices/controller/user.controller");
+const MEDIA = require("../app/mediaServices/controller/media.controller");
+const ADMIN = require("../app/adminServices/controller/adminController")
+const POST = require("../app/postService/controller/postController")
+const STORY = require("../app/storyService/controller/storyController")
+const REPORT = require("../app/reportService/controller/reportController")
+const BLOCK = require("../app/blockService/controller/blockController")
+const CATEGORY = require("../app/categoryService/controller/categoryController")
+const FOLLOW = require("../app/followService/controller/followController")
+const COMMENT = require("../app/commentService/controller/commentController")
+const LIKE = require("../app/likeUnlikeService/controller/likeUnlikeController")
+const SUBCATEGORY = require ('../app/subCategoryService/controller/subCategoryController')
+const NOTIFICATION=require('../app/notificationService/controller/notificationController')
+const PRODUCT = require('../app/productService/controller/productController')
+const CONTACT = require('../app/contactService/controller/contactController')
+const REVIEW = require('../app/reviewService/controller/reviewController')
+const FAVORITE = require('../app/favoriteService/controller/favoriteController')
+const STORE = require('../app/storeServices/controller/storeController')
+const SELLER = require('../app/seller/controller/seller.controller')
+const CART = require('../app/cartServices/controller/cartController')
+const ORDER = require('../app/orderServices/controller/orderController')
+const BANNER = require('../app/bannerServices/controller/bannerController')
+const CHAT = require('../app/messageServices/controller/messageController')
 const handleResponse = require("../middlewares/handleResponse");
 const auth = require("../middlewares/auth");
-require("express-group-routes");
-const responseMessage = require("../helper/responseMessages");
-const { authenticate } = require("../middlewares/auth");
-const { static } = require("express");
-const subscriptionModel = require("../app/subscription/model/subscription.model");
+const access = require("../middlewares/checkAuth");
+const TRACKING = require('../app/trackingService/controller/trackingController')
+const REFUNDREQUEST = require('../app/refundRequestService/controller/refundRequest.controller')
+const CONTACTUSER = require('../app/contactUserService/Controller/contactUserController')
+const MEASUREMENT = require('../app/measurementService/controller/measurementController')
+const SIZE = require('../app/sizeService/controller/sizeController')
+require("express-group-routes"); // for express group routing
+const COMMENTPRODUCT = require("../app/productCommentService/controller/productComment");
 
-const setResponseObject =
-  require("../helper/commonFunctions").setResponseObject;
-/* GET home page. */
-router.get("/", function (req, res, next) {
-  res.render("index", { title: "Crystal Server" });
-});
 
+
+//user group
 router.group("/auth", (user) => {
-  user.post("/signUp", USERS.signup, handleResponse.RESPONSE);
+  user.post("/signup", USERS.signup, handleResponse.RESPONSE);
+  user.post("/verifyOtp", USERS.verifyOtp, handleResponse.RESPONSE);
   user.post("/login", USERS.login, handleResponse.RESPONSE);
-  user.put("/forgotPassword", USERS.forgotPassword, handleResponse.RESPONSE);
-  user.put(
-    "/resetPassword/:token",
-    USERS.resetPassword,
-    handleResponse.RESPONSE
-  );
-  user.put(
-    "/changePassword",
-    auth.authenticate,
-    USERS.changePassword,
-    handleResponse.RESPONSE
-  );
-  user.put(
-    "/updateProfile/:deviceId",
-    auth.authenticate,
-    USERS.updateProfile,
-    handleResponse.RESPONSE
-  );
-  user.delete(
-    "/delete/:id",
-    auth.authenticate,
-    USERS.delete,
-    handleResponse.RESPONSE
-  );
-  user.get(
-    "/getById",
-    auth.authenticate,
-    USERS.getById,
-    handleResponse.RESPONSE
-  );
-  user.get(
-    "/getUsers",
-    auth.authenticate,
-    USERS.getUsers,
-    handleResponse.RESPONSE
-  );
-  user.get(
-    "/dashboardInfo",
-    auth.authenticate,
-    USERS.dashboardInfo,
-    handleResponse.RESPONSE
-  );
-  user.post(
-    "/toggleButton",
-    auth.authenticate,
-    USERS.toggleButton,
-    handleResponse.RESPONSE
-  );
-  user.post("/sendVerifyLink", USERS.sendVerifyLink, handleResponse.RESPONSE);
-  user.get("/verifyLink", USERS.verifyLink, handleResponse.RESPONSE);
-  user.get("/getAllCountry", USERS.getAllCountry, handleResponse.RESPONSE);
-  user.get("/getState", USERS.getState, handleResponse.RESPONSE);
-  user.post(
-    "/blockUser",
-    auth.authenticate,
-    USERS.blockUser,
-    handleResponse.RESPONSE
-  );
-  user.get("/getUser", USERS.getUser, handleResponse.RESPONSE);
-  user.put(
-    "/editProfile",
-    auth.authenticate,
-    USERS.editProfile,
-    handleResponse.RESPONSE
-  );
-  user.get("/getAllUser", USERS.getAllUser, handleResponse.RESPONSE);
-  user.post("/forgetPassword", USERS.forgetPassword, handleResponse.RESPONSE);
-  user.get("/logout", auth.authenticate, USERS.logout, handleResponse.RESPONSE);
-});
-router.group("/static", (static) => {
-  static.post(
-    "/addContent",
-    auth.authenticate,
-    STATIC.addContent,
-    handleResponse.RESPONSE
-  );
-  static.get("/getById/:id", STATIC.getById, handleResponse.RESPONSE);
-  static.delete(
-    "/delete/:id",
-    auth.authenticate,
-    STATIC.delete,
-    handleResponse.RESPONSE
-  );
-  static.get(
-    "/getContents",
-    auth.authenticate,
-    STATIC.getContents,
-    handleResponse.RESPONSE
-  );
-  static.put(
-    "/updateContent/:id",
-    auth.authenticate,
-    STATIC.updateContent,
-    handleResponse.RESPONSE
-  );
-  static.get(
-    "/getByHeading/:heading",
-    STATIC.getByHeading,
-    handleResponse.RESPONSE
-  );
-  static.get("/getOne/:heading", STATIC.getOne, handleResponse.RESPONSE);
-  static.get("/getAllData", STATIC.getAllData, handleResponse.RESPONSE);
-  static.put(
-    "/updateTutorial/:id",
-    auth.authenticate,
-    STATIC.updateTutorial,
-    handleResponse.RESPONSE
-  );
-  static.get(
-    "/getText",
-    auth.authenticate,
-    STATIC.getText,
-    handleResponse.RESPONSE
-  );
-  static.put(
-    "/updateText/:id",
-    auth.authenticate,
-    STATIC.updateText,
-    handleResponse.RESPONSE
-  );
-});
+  user.get("/getProfile", auth.authenticate, USERS.getProfile, handleResponse.RESPONSE);
+  user.put("/updateProfile", auth.authenticate, USERS.updateProfile, handleResponse.RESPONSE);
+  user.put("/changePassword", auth.authenticate, USERS.changePassword, handleResponse.RESPONSE);
+  user.post("/forgotPassword", USERS.forgotPassword, handleResponse.RESPONSE);
+  user.delete("/deleteMany", auth.authenticate, USERS.deleteMany, handleResponse.RESPONSE);
+  user.get("/getData/:id", auth.authenticate, USERS.getData, handleResponse.RESPONSE);
+  user.get("/getAllUserProfile/:userId",auth.authenticate,USERS.getUserProfileData, handleResponse.RESPONSE);
+  user.get("/users",auth.authenticate,USERS.users, handleResponse.RESPONSE);
+  user.get("/chatList",USERS.chatList, handleResponse.RESPONSE);
+  user.get("/inviteLink/:id",USERS.inviteLink, handleResponse.RESPONSE);
+  user.post("/addAdress", USERS.addAdress, handleResponse.RESPONSE);
+  user.get("/getAddress/:id",USERS.getAddress, handleResponse.RESPONSE);
+  user.put("/updateAddress/:id", auth.authenticate, USERS.updateAddress, handleResponse.RESPONSE);
+  user.delete("/deleteAddress/:id", auth.authenticate, USERS.deleteAddress, handleResponse.RESPONSE);
+  user.get("/sellerDetail/:id",auth.authenticate,USERS.sellerDetail, handleResponse.RESPONSE);
+  user.get("/hashTagList",auth.authenticate,USERS.hashTagList, handleResponse.RESPONSE);
 
 
-//subscription===========
-router.group("/subscription", (subscription) => {
-  subscription.post(
-    "/addSubscription",
-    auth.authenticate,
-    SUBSCRIPTION.addSubscription,
-    handleResponse.RESPONSE
-  );
-  subscription.get(
-    "/getById/:id",
-    auth.authenticate,
-    SUBSCRIPTION.getById,
-    handleResponse.RESPONSE
-  );
-  subscription.get(
-    "/getSubscription",
-    auth.authenticate,
-    SUBSCRIPTION.getSubscription,
-    handleResponse.RESPONSE
-  );
-  subscription.delete(
-    "/delete/:id",
-    auth.authenticate,
-    SUBSCRIPTION.delete,
-    handleResponse.RESPONSE
-  );
-  subscription.put(
-    "/updateSubscription/:id",
-    auth.authenticate,
-    SUBSCRIPTION.updateSubscription,
-    handleResponse.RESPONSE
-  );
-  subscription.post("/payment", SUBSCRIPTION.payment, handleResponse.RESPONSE);
-  subscription.get(
-    "/getPayment",
-   
-    SUBSCRIPTION.getPayment,
-    handleResponse.RESPONSE
-  );
-  subscription.get(
-    "/paymentHistory",
-    auth.authenticate,
-    SUBSCRIPTION.paymentHistory,
-    handleResponse.RESPONSE
-  );
-  subscription.get(
-    "/getAll",
-    auth.authenticate,
-    SUBSCRIPTION.getAll,
-    handleResponse.RESPONSE
-  );
-  subscription.get(
-    "/paymentCron",
-    SUBSCRIPTION.paymentCron,
-    handleResponse.RESPONSE
-  );
-  subscription.get(
-    "/getAllPayment",
-    SUBSCRIPTION.getAllPayment,
-    handleResponse.RESPONSE
-  );
-  subscription.delete(
-    "/deletePayment/:id",
-    auth.authenticate,
-    SUBSCRIPTION.deletePayment,
-    handleResponse.RESPONSE
-  );
+
+  
+
 });
 
-
-//----------------
-
-router.group("/store", (store) => {
-  store.post(
-    "/addStore",
-    auth.authenticate,
-    STORE.addStore,
-    handleResponse.RESPONSE
-  );
-  store.get("/getById/:id", STORE.getById, handleResponse.RESPONSE);
-  store.get("/getStores", STORE.getStores, handleResponse.RESPONSE);
-  store.delete(
-    "/delete/:id",
-    auth.authenticate,
-    STORE.delete,
-    handleResponse.RESPONSE
-  );
-  store.put(
-    "/updateStore/:id",
-    auth.authenticate,
-    STORE.updateStore,
-    handleResponse.RESPONSE
-  );
-  store.get("/getSortingStore", STORE.getSortingStore, handleResponse.RESPONSE);
-  store.post(
-    "/getFilterStore",
-    auth.authenticate,
-    STORE.getFilterStore,
-    handleResponse.RESPONSE
-  );
-  store.post("/searchStore", STORE.searchStore, handleResponse.RESPONSE);
-  store.get("/getAllStore", STORE.getAllStore, handleResponse.RESPONSE);
-  store.get("/getStates", STORE.getStates, handleResponse.RESPONSE);
-  store.get("/getCity", STORE.getCity, handleResponse.RESPONSE);
-  store.get("/getAllStores", STORE.getAllStores, handleResponse.RESPONSE);
-  store.post("/importStore", STORE.importStore, handleResponse.RESPONSE);
+//media group
+router.group("/media", (data) => {
+  data.put("/addStories", auth.authenticate, MEDIA.uploadStories, handleResponse.RESPONSE);
+  data.get("/getStories", auth.authenticate, MEDIA.getStories, handleResponse.RESPONSE);
 });
-router.group("/crystal", (crystal) => {
-  crystal.post("/addCrystal", CRYSTAL.addCrystal, handleResponse.RESPONSE);
-  crystal.get(
-    "/getAllCrystal",
-    auth.authenticate,
-    CRYSTAL.getAllCrystal,
-    handleResponse.RESPONSE
-  );
-  crystal.get(
-    "/getById/:id",
-    auth.authenticate,
-    CRYSTAL.getById,
-    handleResponse.RESPONSE
-  );
-  crystal.get(
-    "/getCrystals",
-    auth.authenticate,
-    CRYSTAL.getCrystals,
-    handleResponse.RESPONSE
-  );
-  crystal.delete(
-    "/delete/:id",
-    auth.authenticate,
-    CRYSTAL.delete,
-    handleResponse.RESPONSE
-  );
-  crystal.put(
-    "/updateCrystal/:id",
-    auth.authenticate,
-    CRYSTAL.updateCrystal,
-    handleResponse.RESPONSE
-  );
-  crystal.get(
-    "/getCrystalCount",
-    auth.authenticate,
-    CRYSTAL.getCrystalCount,
-    handleResponse.RESPONSE
-  );
-  crystal.post(
-    "/favourite",
-    auth.authenticate,
-    CRYSTAL.favourite,
-    handleResponse.RESPONSE
-  );
-  crystal.post(
-    "/addNotes",
-    auth.authenticate,
-    CRYSTAL.addNotes,
-    handleResponse.RESPONSE
-  );
-  crystal.get(
-    "/getCrystal",
-    auth.authenticate,
-    CRYSTAL.getCrystal,
-    handleResponse.RESPONSE
-  );
-  crystal.post(
-    "/lookupFilter",
-    auth.authenticate,
-    CRYSTAL.lookupFilter,
-    handleResponse.RESPONSE
-  );
-  crystal.get(
-    "/myFavourite",
-    auth.authenticate,
-    CRYSTAL.myFavourite,
-    handleResponse.RESPONSE
-  );
-  crystal.get(
-    "/lookupFilterData",
-    auth.authenticate,
-    CRYSTAL.lookupFilterData,
-    handleResponse.RESPONSE
-  );
-  crystal.post(
-    "/favouriteFilter",
-    auth.authenticate,
-    CRYSTAL.favouriteFilter,
-    handleResponse.RESPONSE
-  );
-  crystal.get(
-    "/getAllNote",
-    auth.authenticate,
-    ADDEDCRYSTAL.getAllNote,
-    handleResponse.RESPONSE
-  );
-  crystal.post(
-    "/saveCrystal",
-    auth.authenticate,
-    ADDEDCRYSTAL.saveCrystal,
-    handleResponse.RESPONSE
-  );
-  crystal.get(
-    "/crystalHistory",
-    auth.authenticate,
-    ADDEDCRYSTAL.crystalHistory,
-    handleResponse.RESPONSE
-  );
-  crystal.post(
-    "/addFavourite",
-    auth.authenticate,
-    ADDEDCRYSTAL.addFavourite,
-    handleResponse.RESPONSE
-  );
-  crystal.post(
-    "/note",
-    auth.authenticate,
-    ADDEDCRYSTAL.note,
-    handleResponse.RESPONSE
-  );
-  crystal.delete(
-    "/deleteCrystal/:id",
-    auth.authenticate,
-    ADDEDCRYSTAL.deleteCrystal,
-    handleResponse.RESPONSE
-  );
-  crystal.get(
-    "/viewCrsyatl/:id",
-    auth.authenticate,
-    ADDEDCRYSTAL.viewCrsyatl,
-    handleResponse.RESPONSE
-  );
-  crystal.put(
-    "/editCrystal/:id",
-    auth.authenticate,
-    ADDEDCRYSTAL.editCrystal,
-    handleResponse.RESPONSE
-  );
-  crystal.put(
-    "/editIdentification/:id",
-    auth.authenticate,
-    ADDEDCRYSTAL.editIdentification,
-    handleResponse.RESPONSE
-  );
-  crystal.get(
-    "/favouriteHistory",
-    auth.authenticate,
-    ADDEDCRYSTAL.favouriteHistory,
-    handleResponse.RESPONSE
-  );
-  crystal.get(
-    "/wrapperApi",
-    auth.authenticate,
-    CRYSTAL.wrapperApi,
-    handleResponse.RESPONSE
-  );
-  crystal.get(
-    "/filterCrystal",
-    auth.authenticate,
-    ADDEDCRYSTAL.filterCrystal,
-    handleResponse.RESPONSE
-  );
-  crystal.post("/scanningData", auth.authenticate, CRYSTAL.scanningData);
-  crystal.put("/updateFlag/:id", CRYSTAL.updateFlag, handleResponse.RESPONSE);
-  crystal.get(
-    "/getMyCrystal",
-    auth.authenticate,
-    ADDEDCRYSTAL.getMyCrystal,
-    handleResponse.RESPONSE
-  );
-  crystal.put("/changeBrain", CRYSTAL.changeBrain, handleResponse.RESPONSE);
-  crystal.post(
-    "/importCrystal",
-    CRYSTAL.importCrystal,
-    handleResponse.RESPONSE
-  );
+
+router.group("/admin", (admin) => {
+  admin.get("/userList",auth.authenticate, ADMIN.userList, handleResponse.RESPONSE);
+  admin.get("/adminList",auth.authenticate, ADMIN.adminList, handleResponse.RESPONSE);
+  admin.get("/sellerList", auth.authenticate, ADMIN.SellerList, handleResponse.RESPONSE);
+  admin.delete("/userList/:id",auth.authenticate, ADMIN.deleteUser, handleResponse.RESPONSE);
+  admin.get("/dashboard",auth.authenticate, ADMIN.dashboard, handleResponse.RESPONSE)
+  admin.get("/sellerdashboard",auth.authenticate, ADMIN.dashboardSeller, handleResponse.RESPONSE)
+  admin.post("/add",auth.authenticate, ADMIN.AddAdmin,handleResponse.RESPONSE)
+  admin.get('/getAdminStats',auth.authenticate,ADMIN.getAdminStats,handleResponse.RESPONSE)
 });
+
 router.group("/post", (post) => {
-  post.post(
-    "/createPost",
-    auth.authenticate,
-    POST.createPost,
-    handleResponse.RESPONSE
-  );
-  post.get(
-    "/getMyPost",
-    auth.authenticate,
-    POST.getMyPost,
-    handleResponse.RESPONSE
-  );
-  post.get(
-    "/getAllPost",
-    auth.authenticate,
-    POST.getAllPost,
-    handleResponse.RESPONSE
-  );
-  post.post(
-    "/blockPost",
-    auth.authenticate,
-    POST.blockPost,
-    handleResponse.RESPONSE
-  );
-  post.get(
-    "/unblockPost/:id",
-    auth.authenticate,
-    POST.unblockPost,
-    handleResponse.RESPONSE
-  );
-  post.get(
-    "/getById/:id",
-    auth.authenticate,
-    POST.getById,
-    handleResponse.RESPONSE
-  );
-  post.post(
-    "/likeAndDislikePost",
-    auth.authenticate,
-    POST.likeAndDislikePost,
-    handleResponse.RESPONSE
-  );
-  post.post(
-    "/sendReport",
-    auth.authenticate,
-    POST.sendReport,
-    handleResponse.RESPONSE
-  );
-  post.get(
-    "/trendingPost",
-    auth.authenticate,
-    POST.trendingPost,
-    handleResponse.RESPONSE
-  );
-  post.post(
-    "/hidePost",
-    auth.authenticate,
-    POST.hidePost,
-    handleResponse.RESPONSE
-  );
-  post.get(
-    "/allPost",
-    auth.authenticate,
-    POST.allPost,
-    handleResponse.RESPONSE
-  );
-  post.get("/myPost", auth.authenticate, POST.myPost, handleResponse.RESPONSE);
-  post.get(
-    "/getAllReport",
-    auth.authenticate,
-    POST.getAllReport,
-    handleResponse.RESPONSE
-  );
-  post.get("/getAll", POST.getAll, handleResponse.RESPONSE);
-  post.delete(
-    "/delete/:id",
-    auth.authenticate,
-    POST.delete,
-    handleResponse.RESPONSE
-  );
-  post.delete(
-    "/deleteReport/:id",
-    auth.authenticate,
-    POST.deleteReport,
-    handleResponse.RESPONSE
-  );
-  post.get(
-    "/allpost",
-    auth.authenticate,
-    POST.allpost,
-    handleResponse.RESPONSE
-  );
-});
-router.group("/home", (home) => {
-  home.get("/getById/:id", HOME.getById, handleResponse.RESPONSE);
-  home.delete(
-    "/delete/:id",
-    auth.authenticate,
-    HOME.delete,
-    handleResponse.RESPONSE
-  );
-  home.post(
-    "/addGroup",
-    auth.authenticate,
-    HOME.addGroup,
-    handleResponse.RESPONSE
-  );
-  home.post(
-    "/addHomeContent",
-    auth.authenticate,
-    HOME.addHomeContent,
-    handleResponse.RESPONSE
-  );
-  home.get(
-    "/homeData",
-    auth.authenticate,
-    HOME.homeData,
-    handleResponse.RESPONSE
-  );
-  home.put(
-    "/updateGroup/:id",
-    auth.authenticate,
-    HOME.updateGroup,
-    handleResponse.RESPONSE
-  );
-  home.put(
-    "/updateHomeContent/:id",
-    HOME.updateHomeContent,
-    handleResponse.RESPONSE
-  );
-  home.post(
-    "/hidePost",
-    auth.authenticate,
-    HOME.hidePost,
-    handleResponse.RESPONSE
-  );
-  home.get(
-    "/getGroupById/:id",
-    auth.authenticate,
-    HOME.getGroupById,
-    handleResponse.RESPONSE
-  );
-  home.delete(
-    "/deleteGroup/:id",
-    auth.authenticate,
-    HOME.deleteGroup,
-    handleResponse.RESPONSE
-  );
-  home.get(
-    "/getAllGroup",
-    auth.authenticate,
-    HOME.getAllGroup,
-    handleResponse.RESPONSE
-  );
-  home.get("/getAll", auth.authenticate, HOME.getAll, handleResponse.RESPONSE);
-  home.get(
-    "/getAllContent",
-    auth.authenticate,
-    HOME.getAllContent,
-    handleResponse.RESPONSE
-  );
-  home.get(
-    "/getContents",
-    auth.authenticate,
-    HOME.getContents,
-    handleResponse.RESPONSE
-  );
+  post.post("/post", auth.authenticate, POST.UserPost, handleResponse.RESPONSE)
+  post.get("/posts", auth.authenticate, POST.getPostsLoginUser, handleResponse.RESPONSE)
+  post.get("/postlist", auth.authenticate, POST.getPostsList, handleResponse.RESPONSE)
+  post.get("/getPostsLists", auth.authenticate, POST.getPostsLists, handleResponse.RESPONSE)
+  post.get("/userpost/:id", auth.authenticate, POST.getAllPostsById, handleResponse.RESPONSE)
+  post.get("/post/:id", auth.authenticate, POST.getPostsById, handleResponse.RESPONSE)
+  post.put("/updateVideoCount/:id", auth.authenticate, POST.updatePostVideoCount, handleResponse.RESPONSE)
+  post.delete("/post/:id", auth.authenticate, POST.deletePostsById, handleResponse.RESPONSE)
+  post.post("/hashTagPost", auth.authenticate, POST.hashTagPost, handleResponse.RESPONSE)
 
-  home.get(
-    "/getGroups",
-    auth.authenticate,
-    HOME.getGroups,
-    handleResponse.RESPONSE
-  );
-  home.post(
-    "/removePost",
-    auth.authenticate,
-    HOME.removePost,
-    handleResponse.RESPONSE
-  );
-  home.post(
-    "/interestFlag",
-    auth.authenticate,
-    HOME.interestFlag,
-    handleResponse.RESPONSE
-  );
-  home.post("/dropdownGroup", HOME.dropdownGroup, handleResponse.RESPONSE);
-  home.post("/filterGroup", HOME.filterGroup, handleResponse.RESPONSE);
+
+
+
+  
 });
 
-router.group("/rate", (rate) => {
-  rate.post(
-    "/rating",
-    auth.authenticate,
-    RATING.rating,
-    handleResponse.RESPONSE
-  );
-  rate.get("/getRating", RATING.getRating, handleResponse.RESPONSE);
-  rate.get(
-    "/getAllRating",
-    auth.authenticate,
-    RATING.getAllRating,
-    handleResponse.RESPONSE
-  );
-  rate.get(
-    "/userRating",
-    auth.authenticate,
-    RATING.userRating,
-    handleResponse.RESPONSE
-  );
+router.group("/story", (story) => {
+  story.post("/add", auth.authenticate, STORY.addStory, handleResponse.RESPONSE)
+  story.get("/view", auth.authenticate, STORY.getStoryList, handleResponse.RESPONSE)
+  story.get("/viewstory", auth.authenticate, STORY.getStoryListBYUserId, handleResponse.RESPONSE)
+  story.get("/viewstory/:id", auth.authenticate, STORY.getStoryId, handleResponse.RESPONSE)
+  story.get("/viewuserstory", auth.authenticate, STORY.getStoryListBYAllUserId, handleResponse.RESPONSE)
+  story.get("/getStoryData", auth.authenticate, STORY.getStoryData, handleResponse.RESPONSE);
+  story.get("/fetchStoryView/:storyId", auth.authenticate, STORY.fetchStoryView, handleResponse.RESPONSE);
+  story.delete("/story/:id", auth.authenticate, STORY.deleteStoryById, handleResponse.RESPONSE)
 });
+
+//Report Post/User Route
+router.group("/report", (report) => {
+  report.post("/report", auth.authenticate, REPORT.reportUserandPost, handleResponse.RESPONSE)
+  report.get("/reportlist", auth.authenticate, REPORT.getListing, handleResponse.RESPONSE)
+  report.get("/reportpostlist", auth.authenticate, REPORT.getPostListing, handleResponse.RESPONSE)
+  report.get("/report/:id",auth.authenticate, REPORT.getReportById,handleResponse.RESPONSE)
+  report.delete("/report/:id",auth.authenticate, REPORT.deleteReportById,handleResponse.RESPONSE)
+  report.put("/update/:id",auth.authenticate, REPORT.editReportById,handleResponse.RESPONSE)
+})
+
+//Category Route
+router.group("/catgeory", (catgeory) => {
+  catgeory.post("/add", auth.authenticate, CATEGORY.addCategory, handleResponse.RESPONSE)
+  catgeory.delete("/delete/:id", auth.authenticate, CATEGORY.deleteCategoryById, handleResponse.RESPONSE)
+  catgeory.get("/view", auth.authenticate, CATEGORY.getCategory, handleResponse.RESPONSE)
+  catgeory.get("/viewall", auth.authenticate, CATEGORY.getAllCategory, handleResponse.RESPONSE)
+  catgeory.put("/update/:id",auth.authenticate,CATEGORY.updateCategory,handleResponse.RESPONSE)
+  catgeory.get("/view/:id", auth.authenticate, CATEGORY.getCategoryById, handleResponse.RESPONSE)
+  catgeory.get("/viewsall/:id", auth.authenticate, CATEGORY.getAllSubCategoryById, handleResponse.RESPONSE)
+})
+
+//Sub Category Route
+router.group("/subcatgeory", (subcatgeory) => {
+  subcatgeory.post("/add", auth.authenticate, SUBCATEGORY.addSubCategory, handleResponse.RESPONSE)
+  subcatgeory.delete("/delete/:id", auth.authenticate, SUBCATEGORY.deleteSubCategoryById, handleResponse.RESPONSE)
+  subcatgeory.get("/view", auth.authenticate, SUBCATEGORY.getSubCategory, handleResponse.RESPONSE)
+  subcatgeory.put("/update/:id",auth.authenticate,SUBCATEGORY.updateSubCategory,handleResponse.RESPONSE)
+  subcatgeory.get("/view/:id", auth.authenticate, SUBCATEGORY.getSubCategoryById, handleResponse.RESPONSE)
+})
+
+//Follow/Unfollow
+router.group("/user", (user) => {
+  user.post('/follow/:id', auth.authenticate, FOLLOW.follow, handleResponse.RESPONSE)
+  user.put('/unfollow/:id', auth.authenticate, FOLLOW.UnFollow, handleResponse.RESPONSE)
+  user.get("/followers", auth.authenticate, FOLLOW.GetAllFollowers, handleResponse.RESPONSE);
+  user.get("/following", auth.authenticate, FOLLOW.GetAllFollowing, handleResponse.RESPONSE);
+  user.get("/followingPostData", auth.authenticate, FOLLOW.GetAllFollowingPostData, handleResponse.RESPONSE);
+  user.put("/removeFollower/:id", auth.authenticate, FOLLOW.removeFollower, handleResponse.RESPONSE);
+  user.put("/removeFollowing/:id", auth.authenticate, FOLLOW.removeFollowing, handleResponse.RESPONSE);
+})
+
+//Comment on Post/Story
+router.group("/comment", (comment) => {
+  comment.post('/add', auth.authenticate, COMMENT.AddComment, handleResponse.RESPONSE)
+  comment.post('/subReply', auth.authenticate, COMMENT.AddSubReply, handleResponse.RESPONSE)
+  comment.get('/viewpostprevious/:id', auth.authenticate, COMMENT.GetCommentByPostId, handleResponse.RESPONSE)
+  comment.get('/viewpost/:id', auth.authenticate, COMMENT.GetCommentByPostIds, handleResponse.RESPONSE)
+  comment.delete("/delete/:id", auth.authenticate, COMMENT.deleteCommentById, handleResponse.RESPONSE)
+  comment.put("/update/:id",auth.authenticate, COMMENT.updateComment,handleResponse.RESPONSE);
+  comment.post("/addComment",auth.authenticate, COMMENT.addComment,handleResponse.RESPONSE);
+  comment.put("/addStoryLike",auth.authenticate, COMMENT.addStoryLike,handleResponse.RESPONSE);
+  comment.get("/getStoryDetails/:storyId",auth.authenticate, COMMENT.getStoryDetails,handleResponse.RESPONSE);
+  comment.post('/subReplyOnStory', auth.authenticate, COMMENT.addSubReplyOnStory, handleResponse.RESPONSE)
+})
+
+//Like on Post/Story
+router.group("/like",(like)=>{ 
+  like.post('/add', auth.authenticate, LIKE.LikePost, handleResponse.RESPONSE)
+  like.post('/addstoryLikes', auth.authenticate, LIKE.LikeStory, handleResponse.RESPONSE)
+  like.get('/viewpostlike/:id', auth.authenticate, LIKE.GetLikesByPostId, handleResponse.RESPONSE)
+  like.get('/viewstorylike/:id', auth.authenticate, LIKE.getLikes, handleResponse.RESPONSE)
+  like.get('/getDislikeLikes/:id', auth.authenticate, LIKE.getDislikeLikes, handleResponse.RESPONSE)
+  like.delete('/delete/:id', auth.authenticate, LIKE.LikeDelete, handleResponse.RESPONSE);
+  like.put('/addStoryView', auth.authenticate, LIKE.addStoryView, handleResponse.RESPONSE);
+  like.post('/addCommentStory', auth.authenticate, LIKE.addCommentStory, handleResponse.RESPONSE);
+  like.post('/addLikeStory', auth.authenticate, LIKE.addLikeStory, handleResponse.RESPONSE);
+  like.get('/getStoryComment/:storyId', auth.authenticate, LIKE.getStory, handleResponse.RESPONSE);
+  // like.post('/likeDislikePost', auth.authenticate, LIKE.likeDislikePost, handleResponse.RESPONSE)
+  like.post('/likeDislikeComment', auth.authenticate, LIKE.likeComment, handleResponse.RESPONSE);
+  like.post('/likeDislikeSubReply', auth.authenticate, LIKE.likeSuBReply, handleResponse.RESPONSE);
+  like.post('/likeDislikeStoryComment', auth.authenticate, LIKE.likeDislikeStoryComment, handleResponse.RESPONSE);
+})
+
+//Block Users
+router.group("/block", (block) => {
+  block.post("/user", auth.authenticate, BLOCK.blockUser, handleResponse.RESPONSE)
+  block.delete('/delete/:id', auth.authenticate, BLOCK.unBlock, handleResponse.RESPONSE)
+  block.get('/list', auth.authenticate, BLOCK.listing, handleResponse.RESPONSE)
+})
+
+//Notification Users
 router.group("/notification", (notification) => {
-  notification.get(
-    "/getNotification",
-    auth.authenticate,
-    NOTIFICATIONS.getNotification,
-    handleResponse.RESPONSE
-  );
-  notification.post(
-    "/createNotification",
-    auth.authenticate,
-    NOTIFICATIONS.createNotification,
-    handleResponse.RESPONSE
-  );
-  notification.get(
-    "/sendNotificationUser",
-    NOTIFICATIONS.sendNotificationUser,
-    handleResponse.RESPONSE
-  );
-  notification.delete(
-    "/delete/:id",
-    NOTIFICATIONS.delete,
-    handleResponse.RESPONSE
-  );
-  notification.get(
-    "/delete/:id",
-    NOTIFICATIONS.delete,
-    handleResponse.RESPONSE
-  );
-  notification.get(
-    "/getNotificationData",
-    NOTIFICATIONS.getNotificationData,
-    handleResponse.RESPONSE
-  );
+  notification.post("/send", auth.authenticate, NOTIFICATION.notification, handleResponse.RESPONSE)
+  notification.get("/listing", auth.authenticate, NOTIFICATION.getAllNotification, handleResponse.RESPONSE)
+  notification.get("/view/:id", auth.authenticate, NOTIFICATION.getById, handleResponse.RESPONSE)
+  notification.delete("/delete/:id", auth.authenticate, NOTIFICATION.deletenotificationById, handleResponse.RESPONSE)
+  notification.get("/allNotification", auth.authenticate, NOTIFICATION.allNotification, handleResponse.RESPONSE)
+  notification.get('/getMax',NOTIFICATION.getMax) 
+  notification.delete("/deleteNotification/:id", auth.authenticate, NOTIFICATION.deleteNotification, handleResponse.RESPONSE)
+  notification.put("/seenUnseen/:id", auth.authenticate, NOTIFICATION.seenUnseen, handleResponse.RESPONSE)
+  notification.get("/orderNotification", auth.authenticate, NOTIFICATION.orderNotification, handleResponse.RESPONSE)
+  notification.delete("/deleteOrderNotification/:id", auth.authenticate, NOTIFICATION.deleteOrderNotification, handleResponse.RESPONSE)
+  notification.put("/seenUnseenOrder/:id", auth.authenticate, NOTIFICATION.seenUnseenOrder, handleResponse.RESPONSE)
+
+})
+
+//Products Routes
+router.group("/product",(product)=>{
+  product.post("/add",auth.authenticate, PRODUCT.addProducts, handleResponse.RESPONSE)
+  product.get("/listing",auth.authenticate, PRODUCT.getProducts, handleResponse.RESPONSE)
+  product.get("/view/:id",auth.authenticate, PRODUCT.getProductById, handleResponse.RESPONSE)
+  product.delete("/delete/:id",auth.authenticate, PRODUCT.deleteProductById, handleResponse.RESPONSE)
+  product.put("/update/:id",auth.authenticate, PRODUCT.updateProduct, handleResponse.RESPONSE)
+  product.get("/userproducts",auth.authenticate, PRODUCT.getProductByUserId, handleResponse.RESPONSE)
+  product.get("/bestDeals", PRODUCT.bestDeals, handleResponse.RESPONSE)
+  product.get("/recommendProducts", PRODUCT.recommendProducts, handleResponse.RESPONSE)
+  product.get("/homeProducts", PRODUCT.homeProducts, handleResponse.RESPONSE)
+  product.get("/discount", auth.authenticate, PRODUCT.discount, handleResponse.RESPONSE)
+  product.get("/filterScreen", auth.authenticate, PRODUCT.filterScreen, handleResponse.RESPONSE)
+  product.get("/getAllProducts", auth.authenticate, PRODUCT.getAllProducts, handleResponse.RESPONSE)
+  product.get("/getSellerProduct",  auth.authenticate,PRODUCT.getSellerProduct, handleResponse.RESPONSE)
+  product.get("/filterProducts", auth.authenticate, PRODUCT.filterProducts, handleResponse.RESPONSE)
+  product.get("/getSimilarProduct", auth.authenticate,PRODUCT.getSimilarProduct, handleResponse.RESPONSE)
+  product.get("/getProductWithFilter", auth.authenticate,PRODUCT.getProductWithFilter, handleResponse.RESPONSE)
+
+
+  
+})
+
+//Contact Admin Routes
+router.group("/contact",(contact)=>{
+  contact.post('/admin',auth.authenticate, CONTACT.contactAdmin,handleResponse.RESPONSE)
+  contact.get('/listing',auth.authenticate, CONTACT.getListing,handleResponse.RESPONSE)
+  contact.get('/view/:id',auth.authenticate, CONTACT.getById,handleResponse.RESPONSE)
+  contact.delete('/delete/:id',auth.authenticate, CONTACT.deleteById,handleResponse.RESPONSE)
+  contact.post('/sendReplyToUser',auth.authenticate, CONTACT.sendReplyToUser,handleResponse.RESPONSE)
+
+})
+
+//Review and Rating
+router.group('/review',(rating)=>{
+  rating.post('/add',auth.authenticate, REVIEW.addReview,handleResponse.RESPONSE)
+  rating.delete('/delete/:id',auth.authenticate, REVIEW.deleteById, handleResponse.RESPONSE)
+  rating.get('/listing', auth.authenticate, REVIEW.getReview,handleResponse.RESPONSE)
+  rating.put('/update/:id', auth.authenticate, REVIEW.updateReview,handleResponse.RESPONSE)
+  rating.get('/view/:id', auth.authenticate, REVIEW.getOneProductReview,handleResponse.RESPONSE)
+  rating.get('/user/:id', auth.authenticate, REVIEW.getOneUserReview,handleResponse.RESPONSE)
+  rating.get('/user', auth.authenticate, REVIEW.getOneLoginUserReview,handleResponse.RESPONSE)
+
+//==============product comment===========//
+  rating.post('/comment', auth.authenticate, COMMENTPRODUCT.commentProduct,handleResponse.RESPONSE)
+  rating.get('/getComment/:id', auth.authenticate, COMMENTPRODUCT.getComment,handleResponse.RESPONSE)
+  rating.delete('/deleteComment/:id',auth.authenticate, COMMENTPRODUCT.deleteComment, handleResponse.RESPONSE)
+  rating.put('/editComment/:id', auth.authenticate, COMMENTPRODUCT.editComment,handleResponse.RESPONSE)
+
+  rating.post('/addOrderReview', auth.authenticate, REVIEW.addOrderReview,handleResponse.RESPONSE)
+
+
+  
+
+})
+
+//Wishlist Route
+router.group("/favorite", (favorite) => {
+  favorite.post("/add", auth.authenticate, FAVORITE.addFavorite, handleResponse.RESPONSE)
+  favorite.delete("/delete/:id", auth.authenticate, FAVORITE.deleteFavoriteById, handleResponse.RESPONSE)
+  favorite.get("/view", auth.authenticate, FAVORITE.getFavorite, handleResponse.RESPONSE)
+  favorite.get("/view/:id", auth.authenticate, FAVORITE.getFavoriteById, handleResponse.RESPONSE)
+  favorite.get("/getFavoriteByUSer", auth.authenticate, FAVORITE.getFavoriteByUSer, handleResponse.RESPONSE)
+
+  
+})
+
+//Store Route
+router.group('/store',(store)=>{
+  store.post('/add',auth.authenticate,STORE.addStore,handleResponse.RESPONSE)
+  store.delete('/delete/:id',auth.authenticate,STORE.deleteById,handleResponse.RESPONSE)
+  store.get('/view/:id',auth.authenticate,STORE.getById,handleResponse.RESPONSE)
+  store.get('/viewall',auth.authenticate,STORE.getOneUserStore,handleResponse.RESPONSE)
+  store.put('/update/:id',auth.authenticate,STORE.updateStore,handleResponse.RESPONSE)
+})
+
+//Seller Route
+router.group('/seller', (seller) => {
+  seller.post('/createAccount', auth.authenticate, SELLER.addSellerAccount, handleResponse.RESPONSE)
+  seller.put('/request', auth.authenticate, SELLER.updateRequest, handleResponse.RESPONSE)
+  seller.get('/requestList', auth.authenticate, SELLER.getRequestList, handleResponse.RESPONSE)
+  seller.delete('/deleteSeller/:id', auth.authenticate, SELLER.deleteSeller, handleResponse.RESPONSE)
+
+
+
+  
+})
+
+//Cart Route
+router.group("/cart", (cart) => {
+  cart.post("/add", auth.authenticate, CART.addProduct, handleResponse.RESPONSE)
+  cart.put("/edit", auth.authenticate, CART.editProduct, handleResponse.RESPONSE)
+  cart.get("/view", auth.authenticate, CART.getProducts, handleResponse.RESPONSE)
+  cart.delete("/delete/:id", auth.authenticate, CART.removeProducts, handleResponse.RESPONSE)
+
+})
+
+//Order Route
+router.group("/order", (order) => {
+  order.post("/add", auth.authenticate, ORDER.addOrder, handleResponse.RESPONSE)
+  order.put("/edit/:id", auth.authenticate, ORDER.editOrder, handleResponse.RESPONSE)
+  order.delete("/delete/:id", auth.authenticate, ORDER.deleteOrder, handleResponse.RESPONSE)
+  order.get("/view", auth.authenticate, ORDER.getOrders, handleResponse.RESPONSE)
+  order.get("/sellerView", auth.authenticate, ORDER.getSellerOrders, handleResponse.RESPONSE)
+  order.get("/filterList/:status", auth.authenticate, ORDER.filterList, handleResponse.RESPONSE)
+  order.post("/returnRequest/:id", auth.authenticate, ORDER.returnRequest, handleResponse.RESPONSE)
+  order.get("/cancelOrder", auth.authenticate, ORDER.cancelOrder, handleResponse.RESPONSE)
+  order.post("/payment", auth.authenticate, ORDER.payment, handleResponse.RESPONSE)
+  order.get("/getAllOrders", auth.authenticate, ORDER.getAllOrders, handleResponse.RESPONSE)
+  order.get("/cardDetails",ORDER.cardDetails, handleResponse.RESPONSE)
+  order.get("/viewProduct",ORDER.viewProduct, handleResponse.RESPONSE)
+  order.post("/createCard",ORDER.createCard, handleResponse.RESPONSE)
+  order.delete("/deleteCard",ORDER.deleteCard, handleResponse.RESPONSE)
+  order.get("/cardDetails",ORDER.cardDetails, handleResponse.RESPONSE);
+  order.get("/getOrderAsPerStatus",auth.authenticate,ORDER.getOrderAsPerStatus,handleResponse.RESPONSE)
+  order.get("/completeOrder", auth.authenticate, ORDER.completeOrder, handleResponse.RESPONSE)
+  order.get("/getListofStripePaymentTransaction", auth.authenticate, ORDER.getListofStripePaymentTransaction, handleResponse.RESPONSE)
+
+})
+
+//Banner Route
+router.group("/banner", (banner) => {
+  banner.post("/add", BANNER.addBanner, handleResponse.RESPONSE)
+  banner.put("/edit/:id", auth.authenticate, BANNER.editBanner, handleResponse.RESPONSE)
+  banner.get("/view",  BANNER.getBanners, handleResponse.RESPONSE)
+  banner.delete("/delete/:id", auth.authenticate, BANNER.deleteBanners, handleResponse.RESPONSE)
+})
+
+//Message Route
+router.group("/chat", (chat) => {
+  chat.post("/sendMessage", auth.authenticate, CHAT.sendMessage, handleResponse.RESPONSE)
+  chat.get("/chatlist", auth.authenticate, CHAT.chatlist, handleResponse.RESPONSE)
+  chat.get("/chatDetails/:chatId", auth.authenticate, CHAT.chatDetails, handleResponse.RESPONSE)
+})
+
+//Tracking Route
+router.group("/tracking", (tracking) => {
+  tracking.post("/updateTracking",TRACKING.updateTracking, handleResponse.RESPONSE)
+  tracking.get("/getTracking",auth.authenticate, TRACKING.getTracking, handleResponse.RESPONSE)
+  tracking.get("/getAllTracking",auth.authenticate, TRACKING.getAllTracking, handleResponse.RESPONSE)
+  tracking.delete("/delete/:id",auth.authenticate, TRACKING.delete, handleResponse.RESPONSE)
+  tracking.get("/getUserTracking",auth.authenticate, TRACKING.getUserTracking, handleResponse.RESPONSE)
+})
+
+router.group("/refundRequest", (refundReq) => {
+  refundReq.post("/addRefundRequest",auth.authenticate,REFUNDREQUEST.addRefundRequest,handleResponse.RESPONSE)
+  refundReq.get("/getAllRefundRequest",REFUNDREQUEST.getAllRefundRequest,handleResponse.RESPONSE)
+  refundReq.post("/getAllRefundRequestForSeller",auth.authenticate,REFUNDREQUEST.getAllRefundRequestForSeller,handleResponse.RESPONSE)
+  refundReq.put("/updateRefundRequestBySeller",auth.authenticate,REFUNDREQUEST.updateRefundRequestBySeller,handleResponse.RESPONSE)
+  refundReq.post("/getRefundRequestById",auth.authenticate,REFUNDREQUEST.getRefundRequestById,handleResponse.RESPONSE)
+  refundReq.put("/updateOrderStatusBySeller",auth.authenticate,REFUNDREQUEST.updateOrderStatusBySeller,handleResponse.RESPONSE)
+  refundReq.get("/getAllRefundRequestForAdmin",auth.authenticate,REFUNDREQUEST.getAllRefundRequestForAdmin,handleResponse.RESPONSE)
+  refundReq.get("/getAllRefundRequestForAdminByOrderId/:orderId/:product",auth.authenticate,REFUNDREQUEST.getAllRefundRequestForAdminByOrderId,handleResponse.RESPONSE)
+  // refundReq.get("/getAllRefundRequestForAdminOrderId",auth.authenticate,REFUNDREQUEST.getAllRefundRequestForAdminOrderId,handleResponse.RESPONSE)
+  refundReq.get("/getOrdersForRefund",auth.authenticate,REFUNDREQUEST.getOrdersForRefund,handleResponse.RESPONSE)
+  refundReq.get("/refundStatusToUser",auth.authenticate,REFUNDREQUEST.refundStatusToUser,handleResponse.RESPONSE)
+  refundReq.get("/getAllRefundRequestPayByAdmin",auth.authenticate, REFUNDREQUEST.getAllRefundRequestPayByAdmin,handleResponse.RESPONSE)
+})
+
+router.group("/contactUser", (contactUser) => {
+  contactUser.post("/addContactUser",auth.authenticate,CONTACTUSER.contactUserAdmin,handleResponse.RESPONSE)
+})
+
+router.group("/measurement", (measurement) => {
+  measurement.post("/addMeasurement",auth.authenticate, MEASUREMENT.addMeasurement, handleResponse.RESPONSE)
+  measurement.get("/getMeasurementBySeller",auth.authenticate, MEASUREMENT.getMeasurementBySeller, handleResponse.RESPONSE)
+  measurement.delete("/deleteMeasurementBySeller/:id",auth.authenticate, MEASUREMENT.deleteMeasurementBySeller, handleResponse.RESPONSE)
+})
+
+router.group("/size", (measurement) => {
+  measurement.post("/addSize",auth.authenticate, SIZE.addSize, handleResponse.RESPONSE)
+  measurement.get("/getSizeBySeller",auth.authenticate, SIZE.getSizeBySeller, handleResponse.RESPONSE)
+  measurement.delete("/deleteSizeBySeller/:id",auth.authenticate, SIZE.deleteSizeBySeller, handleResponse.RESPONSE)
+})
+
+
+
+// for invalid url
+router.use("*", (req, res) => {
+  res.send("Looks like you landed at wrong placesss ");
 });
 
-router.group("/criteria", (text) => {
-  text.post(
-    "/addCriteria",
-    auth.authenticate,
-    CRITERIA.addCriteria,
-    handleResponse.RESPONSE
-  );
-  text.get(
-    "/getById/:id",
-    auth.authenticate,
-    CRITERIA.getById,
-    handleResponse.RESPONSE
-  );
-  text.get(
-    "/getAll",
-    auth.authenticate,
-    CRITERIA.getAll,
-    handleResponse.RESPONSE
-  );
-  text.delete(
-    "/delete/:id",
-    auth.authenticate,
-    CRITERIA.delete,
-    handleResponse.RESPONSE
-  );
-  text.put(
-    "/updateCriteria/:id",
-    CRITERIA.updateCriteria,
-    handleResponse.RESPONSE
-  );
-  text.put(
-    "/updateCriteriaData/:id",
-    CRITERIA.updateCriteriaData,
-    handleResponse.RESPONSE
-  );
-});
-router.group("/operation", (operation) => {
-  operation.get(
-    "/getApiLog",
-    auth.authenticate,
-    OPERATIONLOG.getApiLog,
-    handleResponse.RESPONSE
-  );
-  operation.delete("/delete/:id", OPERATIONLOG.delete, handleResponse.RESPONSE);
-  operation.get(
-    "/getOne/:id",
-    auth.authenticate,
-    OPERATIONLOG.getOne,
-    handleResponse.RESPONSE
-  );
-  operation.get(
-    "/logTable",
-    auth.authenticate,
-    OPERATIONLOG.logTable,
-    handleResponse.RESPONSE
-  );
-  operation.post("/apiData", OPERATIONLOG.apiData, handleResponse.RESPONSE);
-  operation.post("/logData", OPERATIONLOG.logData, handleResponse.RESPONSE);
-});
-router.group("/updateTable", (updateTable) => {
-  updateTable.put(
-    "/addTable",
-    auth.authenticate,
-    UPDATETABLE.addTable,
-    handleResponse.RESPONSE
-  );
-  updateTable.delete(
-    "/delete/:id",
-    auth.authenticate,
-    UPDATETABLE.delete,
-    handleResponse.RESPONSE
-  );
-  updateTable.get(
-    "/getById/:id",
-    auth.authenticate,
-    UPDATETABLE.getById,
-    handleResponse.RESPONSE
-  );
-  updateTable.get("/getTable", UPDATETABLE.getTable, handleResponse.RESPONSE);
-});
-router.group("/page", (page) => {
-  page.post(
-    "/addPage",
-    auth.authenticate,
-    PAGE.addPage,
-    handleResponse.RESPONSE
-  );
-  page.get(
-    "/getPages",
-    auth.authenticate,
-    PAGE.getPages,
-    handleResponse.RESPONSE
-  );
-  page.delete(
-    "/delete/:id",
-    auth.authenticate,
-    PAGE.delete,
-    handleResponse.RESPONSE
-  );
-  page.get(
-    "/getAllPage",
-    auth.authenticate,
-    PAGE.getAllPage,
-    handleResponse.RESPONSE
-  );
-});
-router.group("/credit", (credit) => {
-  credit.post(
-    "/addCredit",
-    auth.authenticate,
-    CREDIT.addCredit,
-    handleResponse.RESPONSE
-  );
-  credit.get(
-    "/getAllCredit",
-    auth.authenticate,
-    CREDIT.getAllCredit,
-    handleResponse.RESPONSE
-  );
-  credit.delete(
-    "/delete/:id",
-    auth.authenticate,
-    CREDIT.delete,
-    handleResponse.RESPONSE
-  );
-  credit.get(
-    "/getCredits",
-    auth.authenticate,
-    CREDIT.getCredits,
-    handleResponse.RESPONSE
-  );
-  credit.get("/creditCode", CREDIT.creditCode, handleResponse.RESPONSE);
-  credit.get("/getOne/:id", CREDIT.getOne, handleResponse.RESPONSE);
-  credit.get("/getUserCredit", CREDIT.getUserCredit, handleResponse.RESPONSE);
-});
+
+
 module.exports = router;
